@@ -18,6 +18,8 @@ interface API {
     ahead: number
     behind: number
   } | null>
+  getAutoStart: () => Promise<boolean>
+  setAutoStart: (enabled: boolean) => Promise<void>
   onProjectsUpdated: (callback: () => void) => () => void
 }
 

@@ -403,14 +403,28 @@ function setupIpcHandlers(): void {
 
 // --- App Lifecycle ---
 app.whenReady().then(async () => {
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.activitymonitor')
+
+  // Set up auto-start on Windows
+  if (process.platform === 'win32') {
+    app.setLoginItemSettings({
+      openAtLogin: true,
+      path: app.getPath('exe'),
+      args: ['--hidden']
+    })
+  }
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
   setupIpcHandlers()
-  createWindow()
+
+  // Check if started with --hidden flag (from startup)
+  const isHidden = process.argv.includes('--hidden')
+  if (!isHidden) {
+    createWindow()
+  }
 
   // Start file watchers
   const settings = await loadSettings()
@@ -426,3 +440,18 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+// IPC handler for auto-start settings
+ipcMain.handle('get-auto-start', (): boolean => {
+  const settings = app.getLoginItemSettings()
+  return settings.openAtLogin
+})
+
+ipcMain.handle('set-auto-start', (_, enabled: boolean): void => {
+  app.setLoginItemSettings({
+    openAtLogin: enabled,
+    path: app.getPath('exe'),
+    args: ['--hidden']
+  })
+})
+

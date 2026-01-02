@@ -36,6 +36,10 @@ const api = {
     behind: number
   } | null> => ipcRenderer.invoke('get-git-status', projectPath),
 
+  // Auto-start settings
+  getAutoStart: (): Promise<boolean> => ipcRenderer.invoke('get-auto-start'),
+  setAutoStart: (enabled: boolean): Promise<void> => ipcRenderer.invoke('set-auto-start', enabled),
+
   // Listen for project updates
   onProjectsUpdated: (callback: () => void): (() => void) => {
     const listener = (): void => callback()

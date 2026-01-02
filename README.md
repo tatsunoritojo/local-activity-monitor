@@ -1,49 +1,103 @@
 # Local Activity Monitor
 
-## 1. Objective (目的)
+ローカル開発プロジェクトの活動状況を一目で把握できるデスクトップアプリケーション
 
-This application is a desktop tool designed to prevent local development projects from being forgotten.
+---
 
-By monitoring file activity in a specified directory (e.g., a projects folder), it automatically classifies projects based on their recent activity, providing a visual overview of which projects are active and which have become stale. This helps in managing and auditing personal projects, preventing them from becoming "out of sight, out of mind."
+## このアプリでできること
 
-(本アプリケーションは、ローカルの開発プロジェクトが忘れ去られるのを防ぐためのデスクトップツールです。
+### 1. プロジェクト状況の可視化
 
-指定したディレクトリ（例：プロジェクトフォルダ）内のファイルアクティビティを監視することで、各プロジェクトをその活動状況に基づいて自動的に分類します。どのプロジェクトが活発で、どれが放置されているかを視覚的に把握することで、個人のプロジェクト管理と棚卸しを支援し、「見えないものは忘れ去られる」のを防ぎます。)
+複数のプロジェクトフォルダを監視し、最終更新日時に基づいて自動的にステータスを分類します。
 
-## 2. Core Features (主な機能)
+| ステータス | 条件 | 色 |
+|------------|------|-----|
+| **Active** | 7日以内に更新 | オレンジ |
+| **Idle** | 30日以内に更新 | 緑 |
+| **Stale** | 30日以上放置 | 枠線のみ |
 
-- **Automatic Project Discovery**: Automatically identifies projects (subdirectories) within a designated root folder.
-- **Background Activity Monitoring**: A background process watches for file changes (creations, edits, deletions) in the project folders.
-- **Activity Status Classification**: Each project is assigned a status based on its last detected activity:
-  -  trạng thái **Active**: Updated within the last 7 days. (過去1週間以内に更新)
-  - trạng thái **Idle**: Updated within the last 30 days. (過去30日以内に更新)
-  - trạng thái **Stale**: No updates for more than 30 days. (30日以上更新なし)
-- **Visual Dashboard**: A simple UI that lists all discovered projects, sortable and color-coded by their activity status.
+### 2. Git連携
 
-## 3. How It Works (仕組み)
+各プロジェクトのGit状況を即座に確認できます：
 
-1.  **File Watcher**: A `chokidar`-based file watcher runs in the Electron main process, monitoring the target directory for changes.
-2.  **Activity Logging**: When file activity is detected, it's recorded with a timestamp in a local log file (`activity-log.json`). To avoid excessive logging, events are debounced and aggregated.
-3.  **Status Analysis**: On application startup, the activity log is analyzed to determine the last update time for each project.
-4.  **UI Display**: The project list is displayed in the UI, with visual cues (colors, icons) indicating each project's status (Active, Idle, Stale).
+- **ブランチ名** の表示
+- **Staged / Modified / Untracked** ファイル数
+- **Push/Pull** が必要かどうか
+- **ホットネススコア** - 直近のコミット頻度に基づくアクティビティ指標
 
-## 4. Project Setup (開発セットアップ)
+### 3. クイックアクション
 
-### Install
+右クリックまたは詳細パネルから、よく使う操作に素早くアクセス：
 
-```bash
-$ npm install
+- ファイルエクスプローラーで開く
+- ターミナルを起動
+- **Gemini CLI** / **Claude Code** / **Antigravity** を起動
+- **VS Code** で開く
+
+### 4. 柔軟な表示設定
+
+- **ソート**: ステータス順 / 名前順 / 更新日順 / Gitホットネス順
+- **昇順・降順** の切り替え
+- **フィルタ**: Active/Idle/Staleの表示切替、Gitリポジトリのみ表示、未コミット変更ありのみ表示
+
+### 5. 自動起動
+
+Windows起動時にバックグラウンドで自動起動し、常にプロジェクト状況を監視します。
+
+---
+
+## 操作方法
+
+| 操作 | 動作 |
+|------|------|
+| **クリック** | 詳細パネルを表示 |
+| **ダブルクリック** | フォルダを開く |
+| **右クリック** | クイックアクションメニュー |
+
+---
+
+## ホットネススコアとは？
+
+Gitコミット履歴から算出されるアクティビティ指標です。
+
+```
+スコア = (7日間のコミット数 × 3) + (30日間のコミット数)
 ```
 
-### Development
+「Git Hot」でソートすると、**今まさに作業中のプロジェクト**が上位に表示されます。
+
+---
+
+## 開発
 
 ```bash
-$ npm run dev
+# 依存関係のインストール
+npm install
+
+# 開発モードで起動
+npm run dev
+
+# Windowsアプリとしてビルド
+npm run build:win
 ```
 
-### Build
+---
 
-```bash
-# For Windows
-$ npm run build:win
+## 技術スタック
+
+- **Electron** - デスクトップアプリフレームワーク
+- **React + TypeScript** - UIフレームワーク
+- **Tailwind CSS** - スタイリング
+- **Chokidar** - ファイルシステム監視
+
+---
+
+## データ保存場所
+
+すべてのデータはローカルに保存されます（クラウド連携なし）
+
+```
+%APPDATA%/local-activity-monitor/
+├── settings.json     # 設定（監視ディレクトリ、フィルタ等）
+└── activity-log.json # ファイル活動履歴
 ```
