@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: local-activity-monitor
+appId: com.tatsunoritojo.localactivitymonitor
+productName: Local Activity Monitor
 directories:
   buildResources: build
 files:
@@ -39,7 +39,8 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: tatsunoritojo
+  repo: local-activity-monitor
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

@@ -1,6 +1,17 @@
 # Local Activity Monitor
 
+[![GitHub release](https://img.shields.io/github/v/release/tatsunoritojo/local-activity-monitor)](https://github.com/tatsunoritojo/local-activity-monitor/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ローカル開発プロジェクトの活動状況を一目で把握できるデスクトップアプリケーション
+
+## 📥 ダウンロード
+
+**[最新版をダウンロード](https://github.com/tatsunoritojo/local-activity-monitor/releases/latest)**
+
+| OS | ファイル |
+|----|----------|
+| Windows | `local-activity-monitor-X.X.X-setup.exe` |
 
 ---
 
