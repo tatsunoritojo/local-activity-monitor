@@ -241,13 +241,6 @@ function App(): React.JSX.Element {
     }
   }
 
-  const getStatusDot = (status: Project['status']) => {
-    switch (status) {
-      case 'active': return 'bg-orange-400'
-      case 'idle': return 'bg-emerald-400'
-      case 'stale': return 'bg-zinc-500'
-    }
-  }
 
   const formatLastActivity = (lastActivity: number | null) => {
     if (lastActivity === null) return '-'
@@ -405,7 +398,7 @@ function App(): React.JSX.Element {
                   <div className="grid grid-cols-4 gap-2">
                     {sortedProjects.map((project) => {
                       const gs = gitStatusCache.get(project.path)
-                      const gitSummary = getGitSummary(gs)
+                      const gitSummary = getGitSummary(gs ?? null)
                       return (
                         <button
                           key={project.path}
